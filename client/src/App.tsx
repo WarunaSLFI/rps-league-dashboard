@@ -1,5 +1,6 @@
 import { LatestMatches } from './components/dashboard/LatestMatches';
 import { TodayLeaderboard } from './components/dashboard/TodayLeaderboard';
+import { PlayerSearch } from './components/dashboard/PlayerSearch';
 
 function App() {
   return (
@@ -42,6 +43,16 @@ function App() {
               <h3 className="font-semibold text-white">Latest Matches</h3>
             </div>
             <LatestMatches />
+          </section>
+        </div>
+        
+        {/* Secondary Row: Player Search */}
+        <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3 xl:gap-12">
+          <section className="lg:col-span-2 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-white">Player Search</h3>
+            </div>
+            <PlayerSearch />
           </section>
         </div>
       </main>

@@ -20,3 +20,12 @@ export async function fetchTodayLeaderboard(): Promise<ApiResponse<LeaderboardEn
   }
   return res.json();
 }
+
+export async function fetchPlayerMatches(playerName: string): Promise<ApiResponse<Match[]>> {
+  const res = await fetch(`${API_BASE_URL}/api/players/${encodeURIComponent(playerName)}/matches`);
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => null);
+    throw new Error(errorBody?.error?.message || 'Failed to fetch player matches');
+  }
+  return res.json();
+}
