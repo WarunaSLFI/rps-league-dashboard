@@ -30,9 +30,9 @@ export function TodayLeaderboard() {
 
   return (
     <div className="overflow-hidden rounded-xl border border-white/10 bg-surface-light shadow-xl shadow-black/20">
-      <div className="overflow-x-auto">
+      <div className="max-h-[550px] overflow-x-auto overflow-y-auto custom-scrollbar">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="border-b border-white/10 bg-surface text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          <thead className="sticky top-0 z-10 border-b border-white/10 bg-surface-light text-xs font-semibold text-gray-400 uppercase tracking-wider shadow-sm">
             <tr>
               <th className="w-16 px-6 py-4 text-center">Rank</th>
               <th className="px-6 py-4">Player</th>

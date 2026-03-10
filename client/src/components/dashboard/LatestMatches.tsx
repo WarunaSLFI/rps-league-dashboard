@@ -51,29 +51,29 @@ export function LatestMatches() {
         return (
           <div
             key={match.id}
-            className="flex items-center justify-between rounded-lg border border-white/5 bg-surface-light p-3 text-sm transition-colors hover:bg-white/[0.03]"
+            className="flex items-center justify-between rounded-lg border border-white/5 bg-surface-light px-4 py-3 text-sm transition-colors hover:bg-white/[0.03]"
           >
             <div className="flex flex-1 items-center justify-end gap-3 text-right">
-              <span className={`truncate font-medium ${isWinnerA ? 'text-white' : isDraw ? 'text-gray-400' : 'text-gray-500'}`}>
+              <span className={`truncate ${isWinnerA ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'}`}>
                 {match.playerA.name}
               </span>
-              <span className="text-lg opacity-90" title={match.playerA.move}>
+              <span className="text-xl leading-none opacity-90" title={match.playerA.move}>
                 {MOVE_EMOJIS[match.playerA.move] || '❓'}
               </span>
             </div>
 
-            <div className="w-16 text-center text-xs text-gray-500">
-              <span className="block font-mono text-[10px] tracking-wider text-gray-600">
+            <div className="w-16 shrink-0 text-center flex flex-col items-center justify-center -space-y-0.5">
+              <span className="font-mono text-[9px] font-medium tracking-widest text-gray-500">
                 {time}
               </span>
-              <span className="font-medium text-primary-light">vs</span>
+              <span className="text-[10px] font-bold text-primary/70 uppercase">vs</span>
             </div>
 
             <div className="flex flex-1 items-center justify-start gap-3">
-              <span className="text-lg opacity-90" title={match.playerB.move}>
+              <span className="text-xl leading-none opacity-90" title={match.playerB.move}>
                 {MOVE_EMOJIS[match.playerB.move] || '❓'}
               </span>
-              <span className={`truncate font-medium ${isWinnerB ? 'text-white' : isDraw ? 'text-gray-400' : 'text-gray-500'}`}>
+              <span className={`truncate ${isWinnerB ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'}`}>
                 {match.playerB.name}
               </span>
             </div>

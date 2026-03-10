@@ -21,18 +21,23 @@ export function PlayerSearch() {
 
   return (
     <div className="flex flex-col gap-4">
-      <form onSubmit={handleSearch} className="flex gap-2">
+      <form onSubmit={handleSearch} className="relative flex w-full items-center">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+          <svg className="h-5 w-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter player name..."
-          className="w-full rounded-lg border border-white/10 bg-surface-light px-4 py-2 text-sm text-white placeholder-gray-500 focus:border-primary-light focus:outline-none focus:ring-1 focus:ring-primary-light transition-colors"
+          placeholder="Search for a player name..."
+          className="block w-full rounded-xl border border-white/10 bg-surface-light/80 p-4 pl-12 text-sm text-white placeholder-gray-500 transition-colors focus:border-primary-light focus:outline-none focus:ring-1 focus:ring-primary-light"
         />
         <button
           type="submit"
           disabled={isLoading || !query.trim()}
-          className="rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary-light border border-primary/30 hover:bg-primary/30 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="absolute right-2.5 bottom-2.5 rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-primary-light focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Search
         </button>
@@ -53,8 +58,11 @@ export function PlayerSearch() {
         )}
 
         {!isLoading && !error && matches === null && (
-          <div className="flex flex-1 items-center justify-center rounded-xl border border-white/5 bg-surface-light/50 p-8 text-center text-sm text-gray-400">
-            Search for a player to see their history.
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border border-white/5 bg-surface-light/50 p-8 text-center text-sm text-gray-400">
+            <svg className="h-8 w-8 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+            <p>Search for a player to view their match history.</p>
           </div>
         )}
 
@@ -82,35 +90,35 @@ export function PlayerSearch() {
               return (
                 <div
                   key={match.id}
-                  className="flex items-center justify-between rounded-lg border border-white/5 bg-surface-light p-3 text-sm transition-colors hover:bg-white/[0.03]"
+                  className="flex items-center justify-between rounded-lg border border-white/5 bg-surface-light px-4 py-3 text-sm transition-colors hover:bg-white/[0.03]"
                 >
                   <div className="flex flex-1 items-center justify-end gap-3 text-right">
                     <span
-                      className={`truncate font-medium ${
-                        isWinnerA ? 'text-white' : isDraw ? 'text-gray-400' : 'text-gray-500'
+                      className={`truncate ${
+                        isWinnerA ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'
                       }`}
                     >
                       {match.playerA.name}
                     </span>
-                    <span className="text-lg opacity-90" title={match.playerA.move}>
+                    <span className="text-xl leading-none opacity-90" title={match.playerA.move}>
                       {MOVE_EMOJIS[match.playerA.move] || '❓'}
                     </span>
                   </div>
 
-                  <div className="w-24 text-center text-xs text-gray-500 mx-2">
-                    <span className="block font-mono text-[10px] tracking-wider text-gray-600">
+                  <div className="mx-2 flex w-16 shrink-0 flex-col items-center justify-center -space-y-0.5 text-center">
+                    <span className="font-mono text-[9px] font-medium tracking-widest text-gray-500">
                       {time}
                     </span>
-                    <span className="font-medium text-primary-light">vs</span>
+                    <span className="text-[10px] font-bold uppercase text-primary/70">vs</span>
                   </div>
 
                   <div className="flex flex-1 items-center justify-start gap-3">
-                    <span className="text-lg opacity-90" title={match.playerB.move}>
+                    <span className="text-xl leading-none opacity-90" title={match.playerB.move}>
                       {MOVE_EMOJIS[match.playerB.move] || '❓'}
                     </span>
                     <span
-                      className={`truncate font-medium ${
-                        isWinnerB ? 'text-white' : isDraw ? 'text-gray-400' : 'text-gray-500'
+                      className={`truncate ${
+                        isWinnerB ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'
                       }`}
                     >
                       {match.playerB.name}
