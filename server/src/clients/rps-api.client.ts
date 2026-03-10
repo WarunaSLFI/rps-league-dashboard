@@ -2,19 +2,23 @@ import { env } from '../config/env.js';
 import type { LegacyHistoryPage } from '../types/legacy-api.js';
 
 /**
- * Thin HTTP client for the legacy Reaktor RPS API.
+ * Thin HTTP client for the legacy RPS API.
  * Responsible only for external communication — no data transformation.
  */
 
 const TIMEOUT_MS = 10_000;
 
+/**
+ * Fetches a single page of match history.
+ *
+ * @param nextPath - The path for the next page (e.g. "/history?cursor=abc123").
+ *                   On the first call, omit this to fetch "/history".
+ *                   The legacy API returns the next-page path in its `cursor` field.
+ */
 export async function fetchHistoryPage(
-  cursor?: string,
+  nextPath?: string,
 ): Promise<LegacyHistoryPage> {
-  const url = new URL('/rps/history', env.rpsApi.baseUrl);
-  if (cursor) {
-    url.searchParams.set('cursor', cursor);
-  }
+  const url = new URL(nextPath || '/history', env.rpsApi.baseUrl);
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);

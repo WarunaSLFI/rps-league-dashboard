@@ -10,21 +10,37 @@ import type { Match, LeaderboardEntry } from '@shared/types/match.js';
 
 // ─── Normalization ───────────────────────────────────────────────
 
+function calculateWinner(
+  moveA: string,
+  moveB: string,
+): 'PLAYER_A' | 'PLAYER_B' | 'DRAW' {
+  if (moveA === moveB) return 'DRAW';
+  if (
+    (moveA === 'ROCK' && moveB === 'SCISSORS') ||
+    (moveA === 'PAPER' && moveB === 'ROCK') ||
+    (moveA === 'SCISSORS' && moveB === 'PAPER')
+  ) {
+    return 'PLAYER_A';
+  }
+  return 'PLAYER_B';
+}
+
 function normalizeMatch(raw: LegacyMatchResult): Match {
+  const result = calculateWinner(raw.playerA.played, raw.playerB.played);
   const winner =
-    raw.gameResult === 'PLAYER_A'
+    result === 'PLAYER_A'
       ? raw.playerA.name
-      : raw.gameResult === 'PLAYER_B'
+      : result === 'PLAYER_B'
         ? raw.playerB.name
         : null;
 
   return {
     id: raw.gameId,
-    timestamp: new Date(raw.t).toISOString(),
+    timestamp: new Date(raw.time).toISOString(),
     playerA: { name: raw.playerA.name, move: raw.playerA.played },
     playerB: { name: raw.playerB.name, move: raw.playerB.played },
     winner,
-    result: raw.gameResult,
+    result,
   };
 }
 
@@ -34,20 +50,24 @@ function normalizeMatch(raw: LegacyMatchResult): Match {
  * Fetches pages from the legacy API up to a safety cap.
  * The cap prevents runaway fetching if the API returns
  * an unexpectedly large dataset.
+ *
+ * The legacy API returns a `cursor` field containing the path to the
+ * next page (e.g. "/history?cursor=abc123"). We pass this directly
+ * to fetchHistoryPage rather than constructing the URL ourselves.
  */
 async function fetchPages(maxPages?: number): Promise<LegacyMatchResult[]> {
   const cap = maxPages ?? env.maxPaginationPages;
   const allResults: LegacyMatchResult[] = [];
-  let cursor: string | undefined;
+  let nextPath: string | undefined;
   let pagesLoaded = 0;
 
   while (pagesLoaded < cap) {
-    const page = await fetchHistoryPage(cursor);
+    const page = await fetchHistoryPage(nextPath);
     allResults.push(...page.data);
     pagesLoaded++;
 
     if (!page.cursor) break;
-    cursor = page.cursor;
+    nextPath = page.cursor;
   }
 
   return allResults;
@@ -100,7 +120,7 @@ export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
 
-  const todayMatches = raw.filter((m) => m.t >= todayStart.getTime());
+  const todayMatches = raw.filter((m) => m.time >= todayStart.getTime());
 
   // Aggregate wins and losses per player
   const stats = new Map<string, { wins: number; losses: number }>();
@@ -117,10 +137,12 @@ export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
     const a = getOrCreate(match.playerA.name);
     const b = getOrCreate(match.playerB.name);
 
-    if (match.gameResult === 'PLAYER_A') {
+    const result = calculateWinner(match.playerA.played, match.playerB.played);
+
+    if (result === 'PLAYER_A') {
       a.wins++;
       b.losses++;
-    } else if (match.gameResult === 'PLAYER_B') {
+    } else if (result === 'PLAYER_B') {
       b.wins++;
       a.losses++;
     }
