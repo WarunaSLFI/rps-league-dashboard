@@ -6,6 +6,8 @@ A full-stack, monorepo-based web application built to consume and visualize the 
 
 - **Latest Matches Feed:** Displays the most recent matches with clear visualizations of player moves and the calculated winner.
 - **Daily Leaderboard:** Aggregates live match data from the legacy API, computing win rates, total wins, and losses, and highlighting top-ranked players.
+- **Historical Leaderboard:** Filter matches by date range to generate a dynamically calculated leaderboard for any past time period.
+- **Player Search:** Review historical performance and individual match history for any given player.
 - **Robust Backend Integration:** Features automatic pagination safety limits, seamless normalization of legacy data structures, and defensive error handling (returning clean `502 Bad Gateway` JSON without leaking internal state on upstream failures).
 - **Premium UI:** A responsive, modern dark-themed dashboard built with Tailwind CSS v4.
 - **Type Safety:** Shared domain models between the backend and frontend for strict end-to-end type safety.
@@ -88,6 +90,7 @@ The backend exposes the following normalized endpoints:
 - `GET /api/health` - Basic health check.
 - `GET /api/matches/latest?limit=20` - Returns the most recent matches formatted into standardized domain objects.
 - `GET /api/leaderboard/today` - Returns an aggregated and ranked list of players for the current UTC day.
+- `GET /api/leaderboard/range?from={ISO}&to={ISO}` - Returns a dynamically calculated leaderboard for a specified date range.
 - `GET /api/players/:playerName/matches` - Returns historical matches for a specific player (case-insensitive).
 
 ## Testing
@@ -101,6 +104,4 @@ npm run test:server
 ## Future Improvements
 
 1. **Caching Layer:** Integrate an in-memory or Redis cache layer to handle high traffic and reduce latency, avoiding heavy Reaktor API polling.
-2. **Player Search UI:** Develop the frontend implementation to interact with the `/api/players/:playerName/matches` endpoint.
-3. **Automated E2E Testing:** Add Cypress or Playwright tests to ensure core workflows function end-to-end.
-4. **Historical Day Views:** Add a date picker to the leaderboard allowing the frontend to browse previous days' statistics.
+2. **Automated E2E Testing:** Add Cypress or Playwright tests to ensure core workflows function end-to-end.

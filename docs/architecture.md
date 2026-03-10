@@ -4,7 +4,7 @@
 
 The RPS League Dashboard utilizes a standard 3-tier architecture with the Express backend acting as a pure Backend-For-Frontend (BFF) proxy to the legacy Reaktor API:
 
-1. **Frontend (React)**: Executes lightweight `fetch` hooks (`useLatestMatches`, `useTodayLeaderboard`) connected to internal endpoints. Purely responsible for rendering presentational views and handling local loading/error states.
+1. **Frontend (React)**: Executes lightweight `fetch` hooks (`useLatestMatches`, `useTodayLeaderboard`, `useHistoricalLeaderboard`, `usePlayerMatches`) connected to internal endpoints. Purely responsible for rendering presentational views and handling local loading/error states.
 2. **Backend (Express)**: Provides internal REST endpoints mapped specifically to UI needs. Validates query parameters, handles unexpected upstream payload gaps, and formats `502` internal error responses to hide external failures from the frontend.
 3. **Legacy API (Data Source)**: Provides raw historical Rock-Paper-Scissors outcomes via the authenticated `GET /history` endpoint. 
 
