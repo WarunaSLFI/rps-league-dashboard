@@ -20,8 +20,8 @@ export function PlayerSearch() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <form onSubmit={handleSearch} className="relative flex w-full items-center">
+    <div className="flex flex-col h-[500px] gap-4 rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm overflow-hidden">
+      <form onSubmit={handleSearch} className="relative flex w-full shrink-0 items-center">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
           <svg className="h-5 w-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
@@ -43,7 +43,7 @@ export function PlayerSearch() {
         </button>
       </form>
 
-      <div className="flex min-h-[200px] flex-col rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm">
+      <div className="flex flex-col flex-1 min-h-0 relative">
         {isLoading && (
           <div className="flex flex-1 items-center justify-center">
             <LoadingSpinner />
@@ -72,7 +72,7 @@ export function PlayerSearch() {
         )}
 
         {!isLoading && !error && matches !== null && matches.length > 0 && (
-          <div className="flex flex-col h-[400px] overflow-y-auto pr-2 custom-scrollbar pb-2">
+          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-2 min-h-0">
             {matches.map((match) => {
               const time = new Date(match.timestamp).toLocaleDateString(undefined, {
                 month: 'short',

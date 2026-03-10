@@ -14,7 +14,7 @@ export function TodayLeaderboard() {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400 shadow-sm">
+      <div className="flex h-[500px] flex-col justify-center rounded-lg border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400 shadow-sm text-center">
         Failed to load leaderboard: {error}
       </div>
     );
@@ -22,15 +22,15 @@ export function TodayLeaderboard() {
 
   if (leaderboard.length === 0) {
     return (
-      <div className="rounded-lg border border-slate-700 bg-slate-900 p-12 text-center text-sm text-slate-400 shadow-sm">
+      <div className="flex h-[500px] flex-col items-center justify-center rounded-lg border border-slate-700 bg-slate-900 p-12 text-center text-sm text-slate-400 shadow-sm">
         No games played today yet. Start playing to see the leaderboard!
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-700 bg-slate-900 shadow-sm">
-      <div className="max-h-[550px] overflow-x-auto overflow-y-auto custom-scrollbar p-2">
+    <div className="flex flex-col h-[500px] overflow-hidden rounded-lg border border-slate-700 bg-slate-900 shadow-sm">
+      <div className="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar p-2">
         <table className="w-full text-left text-sm whitespace-nowrap">
           <thead className="sticky top-0 z-10 border-b border-slate-700 bg-slate-900 text-xs font-semibold uppercase tracking-wider text-slate-400 shadow-sm">
             <tr>

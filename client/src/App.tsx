@@ -20,10 +20,10 @@ function App() {
 
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3 xl:gap-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-8 xl:gap-12">
           
-          {/* Left Column: Leaderboard */}
-          <section className="flex flex-col gap-4 lg:col-span-2">
+          {/* Top Left: Today's Leaderboard */}
+          <section className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">🏆 Today's Leaderboard</h3>
               <span className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary-light ring-1 ring-primary/20 ring-inset">
@@ -34,24 +34,30 @@ function App() {
             <TodayLeaderboard />
           </section>
 
-          {/* Right Column: Latest Matches & Player Search */}
-          <section className="flex flex-col gap-8">
-            
-            <div className="flex flex-col gap-4">
+          {/* Top Right: Latest Matches */}
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center justify-between h-[36px]">
               <h3 className="text-lg font-semibold text-white">⚔️ Latest Matches</h3>
-              <LatestMatches />
             </div>
-
-            <div className="flex flex-col gap-4">
-              <h3 className="text-lg font-semibold text-white">🔍 Player Search</h3>
-              <PlayerSearch />
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <h3 className="text-lg font-semibold text-white">📅 Historical Leaderboard</h3>
-              <HistoricalLeaderboard />
-            </div>
+            <LatestMatches />
           </section>
+
+          {/* Bottom Left: Player Search */}
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center justify-between h-[36px]">
+              <h3 className="text-lg font-semibold text-white">🔍 Player Search</h3>
+            </div>
+            <PlayerSearch />
+          </section>
+
+          {/* Bottom Right: Historical Leaderboard */}
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center justify-between h-[36px]">
+              <h3 className="text-lg font-semibold text-white">📅 Historical Leaderboard</h3>
+            </div>
+            <HistoricalLeaderboard />
+          </section>
+
         </div>
       </main>
     </div>

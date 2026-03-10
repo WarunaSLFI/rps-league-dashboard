@@ -16,8 +16,8 @@ export function HistoricalLeaderboard() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <form onSubmit={handleSearch} className="flex gap-2">
+    <div className="flex flex-col h-[500px] gap-4 rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm overflow-hidden">
+      <form onSubmit={handleSearch} className="flex gap-2 shrink-0">
         <input
           type="date"
           value={fromDate}
@@ -41,7 +41,7 @@ export function HistoricalLeaderboard() {
         </button>
       </form>
 
-      <div className="flex min-h-[500px] flex-col rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm">
+      <div className="flex flex-col flex-1 min-h-0 relative">
         {isLoading && (
           <div className="flex flex-1 items-center justify-center">
             <LoadingSpinner />
@@ -70,8 +70,8 @@ export function HistoricalLeaderboard() {
         )}
 
         {!isLoading && !error && leaderboard !== null && leaderboard.length > 0 && (
-          <div className="flex-1 -mx-4 -my-4 overflow-hidden rounded-lg">
-            <div className="h-full max-h-[500px] overflow-x-auto overflow-y-auto custom-scrollbar p-2">
+          <div className="flex-1 -mx-4 -my-2 px-4 overflow-hidden rounded-lg">
+            <div className="h-full overflow-x-auto overflow-y-auto custom-scrollbar p-2">
               <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead className="sticky top-0 z-10 border-b border-slate-700 bg-slate-900 text-xs font-semibold uppercase tracking-wider text-slate-400 shadow-sm">
                   <tr>

@@ -12,7 +12,7 @@ export function LatestMatches() {
 
   if (isLoading) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm">
+      <div className="flex h-[500px] items-center justify-center rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm">
         <LoadingSpinner />
       </div>
     );
@@ -20,7 +20,7 @@ export function LatestMatches() {
 
   if (error) {
     return (
-      <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
+      <div className="flex h-[500px] flex-col justify-center rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400 text-center">
         Failed to load matches: {error}
       </div>
     );
@@ -28,15 +28,15 @@ export function LatestMatches() {
 
   if (matches.length === 0) {
     return (
-      <div className="rounded-lg border border-slate-700 bg-slate-900 p-8 text-center text-sm text-slate-400 shadow-sm">
+      <div className="flex h-[500px] flex-col items-center justify-center rounded-lg border border-slate-700 bg-slate-900 p-8 text-center text-sm text-slate-400 shadow-sm">
         No matches played yet today.
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-900 shadow-sm flex flex-col p-4">
-      <div className="flex flex-col flex-1 pb-2">
+    <div className="flex flex-col h-[500px] rounded-lg border border-slate-700 bg-slate-900 shadow-sm p-4 overflow-hidden">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-2">
         {matches.map((match) => {
           const time = new Date(match.timestamp).toLocaleTimeString([], {
             hour: '2-digit',
