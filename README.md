@@ -1,69 +1,106 @@
 # RPS League Dashboard
 
-A full-stack dashboard for visualizing Rock-Paper-Scissors league data — built as a take-home assignment.
+A full-stack, monorepo-based web application built to consume and visualize the Reaktor Rock-Paper-Scissors legacy API. It provides a polished dashboard displaying the latest matches and a dynamically computed daily leaderboard.
+
+## Key Features Currently Implemented
+
+- **Latest Matches Feed:** Displays the most recent matches with clear visualizations of player moves and the calculated winner.
+- **Daily Leaderboard:** Aggregates live match data from the legacy API, computing win rates, total wins, and losses, and highlighting top-ranked players.
+- **Robust Backend Integration:** Features automatic pagination safety limits, seamless normalization of legacy data structures, and defensive error handling (returning clean `502 Bad Gateway` JSON without leaking internal state on upstream failures).
+- **Premium UI:** A responsive, modern dark-themed dashboard built with Tailwind CSS v4.
+- **Type Safety:** Shared domain models between the backend and frontend for strict end-to-end type safety.
 
 ## Tech Stack
 
-| Layer    | Tech                                  |
-| -------- | ------------------------------------- |
-| Client   | React 19, TypeScript, Tailwind CSS v4 |
-| Server   | Node.js, Express, TypeScript          |
-| Bundler  | Vite 6                                |
-| Tooling  | ESLint 9 (flat config), Prettier      |
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS v4
+- **Backend:** Node.js, Express, TypeScript
+- **Testing:** Vitest (Backend service layer unit tests)
+- **Tooling:** ESLint, Prettier, Concurrently (Monorepo dev scripts)
 
-## Project Structure
+## Project Structure Overview
 
-```
-rps-league-dashboard/
-├── client/          # React SPA (Vite + Tailwind v4)
-├── server/          # Express API server
-├── shared/          # Shared TypeScript types
-├── docs/            # Architecture & decision docs
-├── .env.example     # Environment variable reference
-└── package.json     # npm workspace root
-```
+The project uses a standard monorepo workspace approach:
 
-## Getting Started
+- `client/` - React frontend application
+- `server/` - Express backend API
+- `shared/` - Shared TypeScript interfaces (e.g., `Match`, `LeaderboardEntry`)
+- `docs/` - Architecture and decision records
+
+## Local Setup
 
 ### Prerequisites
 
-- Node.js ≥ 18
-- npm ≥ 9
+- Node.js 18+ or 20+
 
-### Setup
+### Installation
+
+1. Clone the repository
+2. Install dependencies matching the monorepo configuration:
+   ```bash
+   npm install
+   ```
+
+### Environment Variables
+
+Create a `.env` file in the root of the project (copy from `.env.example` if available) and add:
+
+```env
+# Server target port
+PORT=3001
+
+# The URL for the Legacy Reaktor APIs
+RPS_API_BASE_URL=https://assignments.reaktor.com
+
+# Your assigned Bearer token
+RPS_API_TOKEN=your_token_here
+
+# Maximum legacy API pages to fetch to prevent infinite loops
+MAX_PAGINATION_PAGES=10
+
+# Point the Vite client proxy to the local backend port
+VITE_API_URL=http://localhost:3001
+```
+
+### Running the Application
+
+You can start both the client and server concurrently from the root directory:
 
 ```bash
-# Install all dependencies (root + workspaces)
-npm install
-
-# Copy env template
-cp .env.example .env
-
-# Start both client and server in development mode
 npm run dev
 ```
 
-The client runs on [http://localhost:5173](http://localhost:5173) and proxies `/api` requests to the server on port 3001.
+- Target frontend: `http://localhost:5173`
+- Target backend endpoints: `http://localhost:3001`
 
 ### Available Scripts
 
-| Script              | Description                              |
-| ------------------- | ---------------------------------------- |
-| `npm run dev`       | Start client + server concurrently       |
-| `npm run dev:client` | Start Vite dev server only              |
-| `npm run dev:server` | Start Express dev server only (tsx watch)|
-| `npm run build`     | Build all packages                       |
-| `npm run lint`      | Lint all TypeScript files                |
-| `npm run format`    | Format all files with Prettier           |
+- `npm run dev` - Start both workspaces in watch mode
+- `npm run dev:client` - Start frontend only
+- `npm run dev:server` - Start backend only
+- `npm run build` - Build all packages for production
+- `npm run lint` - Run ESLint across all packages
+- `npm test:server` - Run backend unit tests via Vitest
 
-## API
+## API Endpoints Overview
 
-| Endpoint      | Method | Description   |
-| ------------- | ------ | ------------- |
-| `/api/health` | GET    | Health check  |
+The backend exposes the following normalized endpoints:
 
-## Documentation
+- `GET /api/health` - Basic health check.
+- `GET /api/matches/latest?limit=20` - Returns the most recent matches formatted into standardized domain objects.
+- `GET /api/leaderboard/today` - Returns an aggregated and ranked list of players for the current UTC day.
+- `GET /api/players/:playerName/matches` - Returns historical matches for a specific player (case-insensitive).
 
-- [Architecture Overview](docs/architecture.md)
-- [Decision Log](docs/decisions.md)
-- [Submission Notes](docs/submission-notes.md)
+## Testing
+
+The backend business logic (normalization, RPS winner calculation, and leaderboard computation) is thoroughly tested using `Vitest`. To run the unit test suite:
+
+```bash
+npm run test:server
+```
+
+## Future Improvements
+
+1. **Caching Layer:** Integrate an in-memory or Redis cache layer to handle high traffic and reduce latency, avoiding heavy Reaktor API polling.
+2. **Player Search UI:** Develop the frontend implementation to interact with the `/api/players/:playerName/matches` endpoint.
+3. **Automated E2E Testing:** Add Cypress or Playwright tests to ensure core workflows function end-to-end.
+4. **Historical Day Views:** Add a date picker to the leaderboard allowing the frontend to browse previous days' statistics.

@@ -1,49 +1,34 @@
-# Decision Log
+# Architectural Decision Records (ADRs)
 
-Lightweight ADR (Architecture Decision Record) log. Entries are added as meaningful decisions are made.
+This document tracks significant architectural decisions made during the development of the RPS League Dashboard.
 
----
+## 1. Monorepo Structure
 
-## ADR-001: Monorepo Structure
+*   **Decision:** Use a single NPM monorepo containing `client`, `server`, and `shared` packages.
+*   **Context:** The application requires a React frontend and an Express backend, communicating via REST. Maintaining separate repositories adds overhead to code reviews and limits type sharing.
+*   **Consequence (Good):** We can declare shared types (e.g., `LeaderboardEntry`) in the `shared/` package, ensuring the API responses and UI props are strictly typed end-to-end without duplication.
+*   **Consequence (Bad):** Slightly steeper initial tooling setup (concurrently, separate tsconfigs) compared to a monolithic codebase.
 
-**Date:** 2026-03-10
-**Status:** Accepted
+## 2. API Normalization Boundary
 
-### Context
-The project requires a client (React SPA) and server (Express API) that share TypeScript types. Need a structure that is clean, easy to review, and appropriate for a take-home assignment.
+*   **Decision:** Legacy data is immediately converted to internal domain types inside `match.service.ts` before reaching the Express router.
+*   **Context:** The legacy Reaktor API provides an awkward schema (`time` fields, nested play objects, missing result calculations).
+*   **Consequence:** The frontend UI stays completely uncoupled from the legacy API shape. If the upstream provider deprecates V1 to V2 shapes, the internal UI schema remains unimpacted—only the backend normalization mapping function requires an update.
 
-### Decision
-Use a single-repo structure with npm workspaces and three packages: `client/`, `server/`, and `shared/`.
+## 3. UTC "Today" Assumption
 
-### Rationale
-- npm workspaces are built-in — no extra tooling needed
-- Shared types work via TS path aliases with no build step
-- Simple to clone, install, and run for reviewers
-- Scales naturally if more packages are needed later
+*   **Decision:** The "Today's Leaderboard" aggregation queries matches starting from 00:00 UTC on the Node server's current date.
+*   **Context:** To compute daily leaderboards, a unified timezone is required. Parsing browser user timezones adds significant timeline divergence complexity (e.g., it is Tuesday for User A but Wednesday for User B).
+*   **Consequence:** A practical, deterministic standard is set. Trade-off: Users far from the GMT line might see the "Daily" leaderboard reset at odd afternoon hours locally. 
 
-### Alternatives Considered
-- **Separate repos:** Adds friction for shared types and reviewer setup
-- **Turborepo/Nx:** Overkill for two packages with one shared type module
+## 4. In-Memory Leaderboard Aggregation
 
----
+*   **Decision:** The Express backend fetches match chunks and computes the leaderboard via local `Array.reduce` maps in Node memory dynamically synchronously per request.
+*   **Context:** Introducing a PostgreSQL/Redis database just to satisfy materialized view aggregations introduces massive deployment and infrastructure complexity to what is effectively a frontend demonstration MVP.
+*   **Consequence:** Fast iteration. However, under high traffic or with 100,000+ unpaginated daily matches, a Node thread blocking array computation will severely throttle performance. A database caching solution is prioritized for future-scaling steps.
 
-## ADR-002: Tailwind CSS v4
+## 5. Lightweight Frontend Data Management
 
-**Date:** 2026-03-10
-**Status:** Accepted
-
-### Context
-Need a CSS approach that is fast to develop with and produces professional-looking results.
-
-### Decision
-Use Tailwind CSS v4 with the `@tailwindcss/vite` plugin and CSS-first configuration.
-
-### Rationale
-- No `tailwind.config.js` needed — configuration lives in CSS via `@theme`
-- Dedicated Vite plugin eliminates PostCSS config
-- Faster builds via Rust-powered engine
-- Cleaner developer experience overall
-
----
-
-> _Add new entries above this line._
+*   **Decision:** Built custom `useLatestMatches` React hooks using native `fetch` and `useState` instead of employing Redux or React Query.
+*   **Context:** Take-home interview assignments often penalize overt abstraction overhead. The current app requires simple "fetch-and-render" pathways without optimistic UI updates, multi-tab caching syncs, or complex pagination polling features just yet.
+*   **Consequence:** Zero dependency bloat, retaining maximum component clarity. The decoupled hook design makes standardizing into Swr/React-Query natively effortless when complexity ultimately peaks.
