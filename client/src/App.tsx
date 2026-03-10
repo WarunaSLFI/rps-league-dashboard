@@ -1,6 +1,7 @@
 import { LatestMatches } from './components/dashboard/LatestMatches';
 import { TodayLeaderboard } from './components/dashboard/TodayLeaderboard';
 import { PlayerSearch } from './components/dashboard/PlayerSearch';
+import { HistoricalLeaderboard } from './components/dashboard/HistoricalLeaderboard';
 
 function App() {
   return (
@@ -46,6 +47,10 @@ function App() {
               <PlayerSearch />
             </div>
 
+            <div className="flex flex-col gap-4">
+              <h3 className="text-lg font-semibold text-white">📅 Historical Leaderboard</h3>
+              <HistoricalLeaderboard />
+            </div>
           </section>
         </div>
       </main>

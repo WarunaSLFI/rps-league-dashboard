@@ -29,3 +29,12 @@ export async function fetchPlayerMatches(playerName: string): Promise<ApiRespons
   }
   return res.json();
 }
+
+export async function fetchHistoricalLeaderboard(from: string, to: string): Promise<ApiResponse<LeaderboardEntry[]>> {
+  const res = await fetch(`${API_BASE_URL}/api/leaderboard/range?from=${from}&to=${to}`);
+  if (!res.ok) {
+    const errorBody = await res.json().catch(() => null);
+    throw new Error(errorBody?.error?.message || 'Failed to fetch historical leaderboard');
+  }
+  return res.json();
+}

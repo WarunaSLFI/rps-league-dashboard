@@ -173,3 +173,17 @@ export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
 
   return calculateLeaderboard(todayMatches);
 }
+
+/**
+ * Returns a leaderboard computed from matches falling within a specific date range.
+ * Both `from` and `to` are expected to be valid Date objects.
+ */
+export async function getLeaderboardForRange(from: Date, to: Date): Promise<LeaderboardEntry[]> {
+  const raw = await fetchPages();
+
+  const rangeMatches = raw.filter((m) => {
+    return m.time >= from.getTime() && m.time <= to.getTime();
+  });
+
+  return calculateLeaderboard(rangeMatches);
+}
