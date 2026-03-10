@@ -12,7 +12,7 @@ export function LatestMatches() {
 
   if (isLoading) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-xl border border-white/5 bg-surface-light/50">
+      <div className="flex h-48 items-center justify-center rounded-lg border border-slate-700 bg-slate-900 p-4 shadow-sm">
         <LoadingSpinner />
       </div>
     );
@@ -28,58 +28,55 @@ export function LatestMatches() {
 
   if (matches.length === 0) {
     return (
-      <div className="rounded-xl border border-white/5 bg-surface-light/50 p-8 text-center text-sm text-gray-400">
+      <div className="rounded-lg border border-slate-700 bg-slate-900 p-8 text-center text-sm text-slate-400 shadow-sm">
         No matches played yet today.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      {matches.map((match) => {
-        const time = new Date(match.timestamp).toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        });
+    <div className="rounded-lg border border-slate-700 bg-slate-900 shadow-sm flex flex-col p-4">
+      <div className="flex flex-col flex-1 pb-2">
+        {matches.map((match) => {
+          const time = new Date(match.timestamp).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
 
-        // Determine styling based on winner
-        const isWinnerA = match.winner === match.playerA.name;
-        const isWinnerB = match.winner === match.playerB.name;
-        const isDraw = match.result === 'DRAW';
+          // Determine styling based on winner
+          const isWinnerA = match.winner === match.playerA.name;
+          const isWinnerB = match.winner === match.playerB.name;
+          const isDraw = match.result === 'DRAW';
 
-        return (
-          <div
-            key={match.id}
-            className="flex items-center justify-between rounded-lg border border-white/5 bg-surface-light px-4 py-3 text-sm transition-colors hover:bg-white/[0.03]"
-          >
-            <div className="flex flex-1 items-center justify-end gap-3 text-right">
-              <span className={`truncate ${isWinnerA ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'}`}>
-                {match.playerA.name}
-              </span>
-              <span className="text-xl leading-none opacity-90" title={match.playerA.move}>
-                {MOVE_EMOJIS[match.playerA.move] || '❓'}
-              </span>
+          return (
+            <div
+              key={match.id}
+              className="flex items-center justify-between border-b border-slate-800 py-3 last:border-0"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1.5 text-sm">
+                  <span className={`truncate ${isWinnerA ? 'font-semibold text-white' : 'font-normal text-slate-400'}`}>
+                    {match.playerA.name} <span className="opacity-90">{MOVE_EMOJIS[match.playerA.move]}</span>
+                  </span>
+                  <span className="text-[10px] font-bold uppercase text-slate-500 mx-1">vs</span>
+                  <span className={`truncate ${isWinnerB ? 'font-semibold text-white' : 'font-normal text-slate-400'}`}>
+                    <span className="opacity-90">{MOVE_EMOJIS[match.playerB.move]}</span> {match.playerB.name}
+                  </span>
+                </div>
+                <div className="text-xs text-slate-400">
+                  Winner: <span className="font-medium text-white">{isDraw ? 'Draw' : match.winner}</span>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <span className="text-xs text-slate-500 whitespace-nowrap">
+                  {time} UTC
+                </span>
+              </div>
             </div>
-
-            <div className="w-16 shrink-0 text-center flex flex-col items-center justify-center -space-y-0.5">
-              <span className="font-mono text-[9px] font-medium tracking-widest text-gray-500">
-                {time}
-              </span>
-              <span className="text-[10px] font-bold text-primary/70 uppercase">vs</span>
-            </div>
-
-            <div className="flex flex-1 items-center justify-start gap-3">
-              <span className="text-xl leading-none opacity-90" title={match.playerB.move}>
-                {MOVE_EMOJIS[match.playerB.move] || '❓'}
-              </span>
-              <span className={`truncate ${isWinnerB ? 'font-semibold text-white' : isDraw ? 'font-medium text-gray-400' : 'font-normal text-gray-500'}`}>
-                {match.playerB.name}
-              </span>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
