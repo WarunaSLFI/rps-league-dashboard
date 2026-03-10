@@ -10,7 +10,7 @@ import type { Match, LeaderboardEntry } from '@shared/types/match.js';
 
 // ─── Normalization ───────────────────────────────────────────────
 
-function calculateWinner(
+export function calculateWinner(
   moveA: string,
   moveB: string,
 ): 'PLAYER_A' | 'PLAYER_B' | 'DRAW' {
@@ -25,7 +25,7 @@ function calculateWinner(
   return 'PLAYER_B';
 }
 
-function normalizeMatch(raw: LegacyMatchResult): Match {
+export function normalizeMatch(raw: LegacyMatchResult): Match {
   const result = calculateWinner(raw.playerA.played, raw.playerB.played);
   const winner =
     result === 'PLAYER_A'
@@ -111,18 +111,7 @@ export async function getPlayerMatches(playerName: string): Promise<Match[]> {
  * want to consider the user's timezone, but UTC is predictable
  * and appropriate for a take-home assignment.
  */
-export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
-  const raw = await fetchPages();
-
-  // Today = start of current UTC day
-  const now = new Date();
-  const todayStart = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
-
-  const todayMatches = raw.filter((m) => m.time >= todayStart.getTime());
-
-  // Aggregate wins and losses per player
+export function calculateLeaderboard(matches: LegacyMatchResult[]): LeaderboardEntry[] {
   const stats = new Map<string, { wins: number; losses: number }>();
 
   const getOrCreate = (name: string) => {
@@ -133,7 +122,7 @@ export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
     return stats.get(key)!;
   };
 
-  for (const match of todayMatches) {
+  for (const match of matches) {
     const a = getOrCreate(match.playerA.name);
     const b = getOrCreate(match.playerB.name);
 
@@ -169,4 +158,18 @@ export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
   });
 
   return entries;
+}
+
+export async function getTodayLeaderboard(): Promise<LeaderboardEntry[]> {
+  const raw = await fetchPages();
+
+  // Today = start of current UTC day
+  const now = new Date();
+  const todayStart = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+
+  const todayMatches = raw.filter((m) => m.time >= todayStart.getTime());
+
+  return calculateLeaderboard(todayMatches);
 }
